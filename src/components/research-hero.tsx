@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
@@ -19,20 +19,14 @@ import { OfficialBrandIcon } from "@/components/official-brand-icon";
 import { OptimizedImage } from "@/components/optimized-image";
 import { defaultLocale, heroCopy, type Locale } from "@/data/site-copy";
 import { heroOfficialBrands } from "@/lib/learning-path-brands";
-import { dispatchResearchProjectJump, researchProjectLinks } from "@/lib/research-project-index";
+import { dispatchResearchProjectJump } from "@/lib/research-project-index";
+import { projectNavigationItems, projectsPerPage } from "@/data/project-navigation";
 
 const githubProfileStats = [
   { label: "Repositories", value: "25", icon: Layers3 },
   { label: "Stars", value: "150", icon: Star },
   { label: "Followers", value: "☝️", icon: UsersRound },
 ] as const;
-
-const projectTagHues = [92, 210, 270, 32, 340, 174] as const;
-
-function getProjectTagHue(tag: string) {
-  const hash = Array.from(tag).reduce((value, character) => (value * 31 + character.charCodeAt(0)) >>> 0, 0);
-  return projectTagHues[hash % projectTagHues.length];
-}
 
 const timelineIcons = [Cpu, Database, Layers3, Bot, UsersRound, FlaskConical] as const;
 
@@ -83,8 +77,8 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
 
   return (
     <section className="relative overflow-hidden border-b border-white/10 bg-background/10">
-      <div className="mx-auto grid max-w-7xl gap-5 px-6 pb-8 pt-8 lg:min-h-[calc(100svh-72px)] lg:grid-cols-[minmax(0,0.58fr)_minmax(340px,0.42fr)] lg:items-stretch lg:px-8 lg:pb-8 lg:pt-8 xl:grid-cols-[minmax(0,0.6fr)_minmax(360px,0.4fr)]">
-        <div className="relative z-10 flex min-w-0 flex-col lg:min-h-[340px] lg:justify-center">
+      <div className="mx-auto grid max-w-7xl gap-5 px-6 pb-8 pt-8 lg:grid-cols-[minmax(0,0.58fr)_minmax(340px,0.42fr)] lg:items-stretch lg:px-8 lg:pb-8 lg:pt-8 xl:grid-cols-[minmax(0,0.6fr)_minmax(360px,0.4fr)]">
+        <div className="hero-introduction relative z-10 flex min-w-0 flex-col lg:justify-center">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -217,7 +211,7 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
           initial={{ opacity: 0, scale: 0.985, y: 14 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.72, delay: 0.18, ease: "easeOut" }}
-          className="relative z-10 flex min-w-0 lg:min-h-[340px]"
+          className="hero-project-navigation relative z-10 min-w-0"
         >
           <ResearchNavigation locale={locale} />
         </motion.div>
@@ -236,43 +230,47 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
 }
 
 function ResearchNavigation({ locale }: { locale: Locale }) {
-  const copy = heroCopy[locale];
+  const [page, setPage] = useState(0);
+  const pageCount = Math.ceil(projectNavigationItems.length / projectsPerPage);
+  const visibleProjects = projectNavigationItems.slice(page * projectsPerPage, (page + 1) * projectsPerPage);
 
   return (
-    <div className="w-full min-w-0 p-3 md:p-3.5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">{copy.indexEyebrow}</div>
-          <h2 className="mt-1.5 text-2xl font-semibold text-foreground">{locale === "zh" ? "项目导航" : "Project navigation"}</h2>
-          <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
-            {locale === "zh" ? "点击项目，直接前往并展开详情。" : "Choose a project to jump to its details."}
-          </p>
-        </div>
-        <div className="rounded-full bg-surface/25 px-3 py-2 text-xs font-semibold text-accent">
-          {researchProjectLinks.length}
-        </div>
+    <div className="project-navigation-panel">
+      <div className="flex shrink-0 items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold text-foreground">{locale === "zh" ? "项目导航" : "Project navigation"}</h2>
+        <span className="rounded-full bg-surface/25 px-2.5 py-1 text-xs font-semibold text-accent">{projectNavigationItems.length}</span>
       </div>
-      <nav className="project-entry-list mt-5" aria-label={locale === "zh" ? "项目导航" : "Project navigation"}>
-        {researchProjectLinks.map((item) => (
+      <nav id="hero-project-list" className="project-entry-list" aria-label={locale === "zh" ? "项目导航" : "Project navigation"}>
+        {visibleProjects.map((item) => (
           <a
             key={item.id}
             href={`#${item.id}`}
-            title={`${item.projectName} — ${item.categoryTitle}`}
+            title={`${item.name} — ${item.projectName}`}
             aria-label={item.projectName}
             onClick={() => dispatchResearchProjectJump(item.id)}
             className="project-entry-link focus-ring"
           >
-            <span className="project-entry-name">{item.projectName}</span>
+            <span className="project-entry-name">{item.name}</span>
             <span className="project-entry-tags">
-              {item.tags.map((tag) => (
-                <span key={tag} className="project-entry-tag" style={{ "--tag-hue": getProjectTagHue(tag) } as CSSProperties}>
-                  {tag}
-                </span>
-              ))}
+              <span className="project-entry-tag project-domain-tag" title={`${locale === "zh" ? "应用领域" : "Application domain"}: ${item.domain[locale]}`}>
+                {item.domain[locale]}
+              </span>
+              <span className="project-entry-tag project-technology-tag" title={`${locale === "zh" ? "核心技术" : "Core technology"}: ${item.technology[locale]}`}>
+                {item.technology[locale]}
+              </span>
             </span>
           </a>
         ))}
       </nav>
+      <div className="project-pagination">
+        <button type="button" className="project-page-button focus-ring" aria-controls="hero-project-list" disabled={page === 0} onClick={() => setPage((current) => current - 1)}>
+          {locale === "zh" ? "上一页" : "Previous"}
+        </button>
+        <span className="text-xs font-medium text-muted-foreground" aria-live="polite" aria-atomic="true">{page + 1} / {pageCount}</span>
+        <button type="button" className="project-page-button focus-ring" aria-controls="hero-project-list" disabled={page === pageCount - 1} onClick={() => setPage((current) => current + 1)}>
+          {locale === "zh" ? "下一页" : "Next"}
+        </button>
+      </div>
     </div>
   );
 }
