@@ -136,6 +136,8 @@ export function ResearchProjectModules({ locale = defaultLocale }: { locale?: Lo
                       key={image}
                       src={image}
                       alt={`${category.title} project preview ${imageIndex + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       className="h-[clamp(7rem,9.4vw,9.75rem)] w-auto max-w-full min-w-0 object-contain transition duration-500 group-hover:-translate-y-1 group-hover:scale-[1.015]"
                     />
                   ))}
@@ -410,7 +412,6 @@ function ProjectDetail({
                             brand={getLearningPathBrand(item)}
                             className="learning-path-title-icon mt-0.5 h-5 w-5"
                             imageClassName="p-[3px]"
-                            fallbackClassName="text-[0.48rem]"
                           />
                           <span className="min-w-0">{item.label}</span>
                         </span>
@@ -470,6 +471,8 @@ function ProjectVisual({ name, images }: { name: string; images: readonly string
           key={image}
           src={image}
           alt={index === 0 ? `${name} screenshot` : `${name} supporting screenshot ${index}`}
+          loading="lazy"
+          decoding="async"
           className="block w-full max-w-full object-contain"
         />
       ))}

@@ -315,7 +315,6 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
                   brand={brand}
                   className="hero-official-brand-icon h-8 w-8"
                   imageClassName="p-1.5"
-                  fallbackClassName="text-[0.56rem]"
                 />
               ))}
             </div>
@@ -371,12 +370,14 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
   }, [draggingId]);
 
   useEffect(() => {
-    if (reduceMotion) {
+    const stage = navStageRef.current;
+    if (reduceMotion || !stage) {
       return;
     }
 
     let frameId = 0;
     let lastTime = performance.now();
+    let inView = false;
 
     const tick = (time: number) => {
       const delta = Math.min((time - lastTime) / 16.67, 2.2);
@@ -384,7 +385,7 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
       const hoveredBodyId = hoveredIdRef.current;
       const draggedBodyId = draggingIdRef.current;
 
-      const next = navBodiesRef.current.map((body, index) => {
+      const next = navBodiesRef.current.map((body) => {
         if (draggedBodyId === body.id) {
           return { ...body, vx: 0, vy: 0 };
         }
@@ -522,10 +523,26 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
       frameId = requestAnimationFrame(tick);
     };
 
-    frameId = requestAnimationFrame(tick);
+    const updatePlayback = () => {
+      cancelAnimationFrame(frameId);
+      frameId = 0;
+      if (inView && !document.hidden) {
+        lastTime = performance.now();
+        frameId = requestAnimationFrame(tick);
+      }
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting;
+      updatePlayback();
+    });
+    observer.observe(stage);
+    document.addEventListener("visibilitychange", updatePlayback);
 
     return () => {
       cancelAnimationFrame(frameId);
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", updatePlayback);
     };
   }, [reduceMotion]);
 
@@ -642,7 +659,6 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
                 strokeLinecap="round"
                 strokeDasharray="3 8"
                 opacity={hoveredId ? (hoveredId === item.id ? "0.96" : "0.26") : "0.72"}
-                className="animate-edge-flow"
               />
             );
           })}

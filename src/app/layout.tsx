@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { BackgroundVideo } from "@/components/background-video";
 import { ProjectJumpSidebar } from "@/components/project-jump-sidebar";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -57,9 +56,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="site-video-backdrop" aria-hidden="true">
-          <BackgroundVideo />
-          <div className="site-video-scrim" />
+        <div className="site-backdrop" aria-hidden="true">
+          <img
+            src="/assets/web_bg_poster.jpg"
+            alt=""
+            className="site-background-image"
+            decoding="async"
+            fetchPriority="high"
+          />
+          <div className="site-background-scrim" />
         </div>
         <SiteHeader />
         <div className="site-page-shell">
