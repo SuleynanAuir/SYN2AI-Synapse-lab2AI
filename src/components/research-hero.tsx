@@ -11,7 +11,6 @@ import {
   FlaskConical,
   Github,
   Layers3,
-  Network,
   Sparkles,
   Star,
   UsersRound,
@@ -28,7 +27,12 @@ const githubProfileStats = [
   { label: "Followers", value: "☝️", icon: UsersRound },
 ] as const;
 
-const projectCategoryIcons = [Bot, Layers3, FlaskConical, Cpu, Database, Network] as const;
+const projectTagHues = [92, 210, 270, 32, 340, 174] as const;
+
+function getProjectTagHue(tag: string) {
+  const hash = Array.from(tag).reduce((value, character) => (value * 31 + character.charCodeAt(0)) >>> 0, 0);
+  return projectTagHues[hash % projectTagHues.length];
+}
 
 const timelineIcons = [Cpu, Database, Layers3, Bot, UsersRound, FlaskConical] as const;
 
@@ -248,26 +252,26 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
           {researchProjectLinks.length}
         </div>
       </div>
-      <nav className="project-orbit-grid mt-5" aria-label={locale === "zh" ? "项目圆形导航" : "Project bubble navigation"}>
-        {researchProjectLinks.map((item, index) => {
-          const Icon = projectCategoryIcons[item.categoryIndex];
-          return (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              title={`${item.projectName} — ${item.categoryTitle}`}
-              aria-label={item.projectName}
-              onClick={() => dispatchResearchProjectJump(item.id)}
-              className="research-nav-node project-orbit-link focus-ring flex flex-col items-center justify-center rounded-full text-center"
-            >
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-surface/25 text-accent shadow-sm">
-                <Icon className="h-3.5 w-3.5" />
-              </span>
-              <span className="mt-1 text-[0.72rem] font-semibold leading-tight text-foreground">{item.shortName}</span>
-              <span aria-hidden="true" className="mt-1 text-[0.6rem] font-medium tracking-widest text-accent/75">{String(index + 1).padStart(2, "0")}</span>
-            </a>
-          );
-        })}
+      <nav className="project-entry-list mt-5" aria-label={locale === "zh" ? "项目导航" : "Project navigation"}>
+        {researchProjectLinks.map((item) => (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            title={`${item.projectName} — ${item.categoryTitle}`}
+            aria-label={item.projectName}
+            onClick={() => dispatchResearchProjectJump(item.id)}
+            className="project-entry-link focus-ring"
+          >
+            <span className="project-entry-name">{item.projectName}</span>
+            <span className="project-entry-tags">
+              {item.tags.map((tag) => (
+                <span key={tag} className="project-entry-tag" style={{ "--tag-hue": getProjectTagHue(tag) } as CSSProperties}>
+                  {tag}
+                </span>
+              ))}
+            </span>
+          </a>
+        ))}
       </nav>
     </div>
   );

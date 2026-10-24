@@ -35,6 +35,7 @@ export const researchProjectLinks = researchCategories.flatMap((category, catego
     id: getResearchProjectId(project.name),
     shortName: projectShortNames[project.name] ?? project.name,
     projectName: project.name,
+    tags: project.keywords.slice(0, 2),
     categoryTitle: category.title,
     categoryIndex,
     projectIndex,
