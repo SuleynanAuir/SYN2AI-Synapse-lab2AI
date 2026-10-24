@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from "react";
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
-  BookOpen,
   Bot,
   Cpu,
   Database,
@@ -21,6 +20,7 @@ import { OfficialBrandIcon } from "@/components/official-brand-icon";
 import { OptimizedImage } from "@/components/optimized-image";
 import { defaultLocale, heroCopy, type Locale } from "@/data/site-copy";
 import { heroOfficialBrands } from "@/lib/learning-path-brands";
+import { dispatchResearchProjectJump, researchProjectLinks } from "@/lib/research-project-index";
 
 const githubProfileStats = [
   { label: "Repositories", value: "25", icon: Layers3 },
@@ -28,118 +28,7 @@ const githubProfileStats = [
   { label: "Followers", value: "☝️", icon: UsersRound },
 ] as const;
 
-const researchNavItems = [
-  {
-    id: "research",
-    number: "01",
-    title: "Research",
-    body: "Explore research directions",
-    href: "#research-vision",
-    icon: Sparkles,
-    external: false,
-    x: 28,
-    y: 23,
-    size: "wide",
-  },
-  {
-    id: "projects",
-    number: "02",
-    title: "Projects",
-    body: "Open-source AI systems",
-    href: "#research-projects",
-    icon: Layers3,
-    external: false,
-    x: 72,
-    y: 24,
-    size: "medium",
-  },
-  {
-    id: "agents",
-    number: "03",
-    title: "Agents",
-    body: "LLM agents and autonomous systems",
-    href: "/agent-hub",
-    icon: Bot,
-    external: false,
-    x: 22,
-    y: 57,
-    size: "medium",
-  },
-  {
-    id: "knowledge",
-    number: "04",
-    title: "Knowledge",
-    body: "RAG and graph intelligence",
-    href: "#research-projects",
-    icon: Network,
-    external: false,
-    x: 84,
-    y: 56,
-    size: "wide",
-  },
-  {
-    id: "science",
-    number: "05",
-    title: "Science",
-    body: "AI for scientific discovery",
-    href: "#research-projects",
-    icon: FlaskConical,
-    external: false,
-    x: 36,
-    y: 84,
-    size: "medium",
-  },
-  {
-    id: "publications",
-    number: "06",
-    title: "Publications",
-    body: "Research notes and technical explorations",
-    href: "/papers",
-    icon: BookOpen,
-    external: false,
-    x: 64,
-    y: 84,
-    size: "wide",
-  },
-] as const;
-
-const researchNavCore = { x: 45, y: 47 } as const;
-
-type ResearchNavItemId = (typeof researchNavItems)[number]["id"];
-
-type ResearchNavBody = {
-  id: ResearchNavItemId;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  radius: number;
-  anchorX: number;
-  anchorY: number;
-  seed: number;
-};
-
-const initialResearchNavBodies: ResearchNavBody[] = [
-  { id: "research", x: 24, y: 16, vx: 0.013, vy: 0.008, radius: 11.6, anchorX: 24, anchorY: 16, seed: 0.8 },
-  { id: "projects", x: 74, y: 21, vx: -0.012, vy: 0.011, radius: 11.2, anchorX: 74, anchorY: 21, seed: 2.2 },
-  { id: "agents", x: 14, y: 57, vx: 0.012, vy: -0.012, radius: 11.2, anchorX: 14, anchorY: 57, seed: 3.7 },
-  { id: "knowledge", x: 83, y: 55, vx: -0.013, vy: -0.010, radius: 11.6, anchorX: 83, anchorY: 55, seed: 5.1 },
-  { id: "science", x: 35, y: 78, vx: 0.010, vy: -0.008, radius: 11.2, anchorX: 35, anchorY: 78, seed: 6.4 },
-  { id: "publications", x: 67, y: 72, vx: -0.011, vy: -0.009, radius: 11.6, anchorX: 67, anchorY: 72, seed: 8.0 },
-];
-
-const initialResearchNavBodyMap = new Map<ResearchNavItemId, ResearchNavBody>(
-  initialResearchNavBodies.map((body) => [body.id, body]),
-);
-
-const researchNavRelations = [
-  ["research", "projects"],
-  ["research", "agents"],
-  ["agents", "knowledge"],
-  ["knowledge", "science"],
-  ["science", "publications"],
-  ["projects", "publications"],
-] as const;
+const projectCategoryIcons = [Bot, Layers3, FlaskConical, Cpu, Database, Network] as const;
 
 const timelineIcons = [Cpu, Database, Layers3, Bot, UsersRound, FlaskConical] as const;
 
@@ -208,10 +97,10 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
             transition={{ duration: 0.62, delay: 0.08, ease: "easeOut" }}
             className="mt-6 max-w-none text-[1.7rem] font-semibold leading-[1.04] tracking-normal text-foreground sm:text-[2.65rem] md:text-[3.2rem] lg:text-[2.75rem] xl:text-[3.25rem]"
           >
-            <span className="block sm:whitespace-nowrap">
+            <span className="block">
               {copy.h1Line1Prefix} <span className="gradient-text">{copy.h1Line1Highlight}</span>
             </span>
-            <span className="block sm:whitespace-nowrap">
+            <span className="block">
               {copy.h1Line2Prefix} <span className="text-accent">{copy.h1Line2Highlight}</span>
             </span>
           </motion.h1>
@@ -324,7 +213,7 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
           initial={{ opacity: 0, scale: 0.985, y: 14 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.72, delay: 0.18, ease: "easeOut" }}
-          className="relative z-10 flex lg:min-h-[340px]"
+          className="relative z-10 flex min-w-0 lg:min-h-[340px]"
         >
           <ResearchNavigation locale={locale} />
         </motion.div>
@@ -344,411 +233,42 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
 
 function ResearchNavigation({ locale }: { locale: Locale }) {
   const copy = heroCopy[locale];
-  const reduceMotion = useReducedMotion();
-  const [navBodies, setNavBodies] = useState<ResearchNavBody[]>(initialResearchNavBodies);
-  const [hoveredId, setHoveredId] = useState<ResearchNavItemId | null>(null);
-  const [activeId, setActiveId] = useState<ResearchNavItemId | null>(null);
-  const [draggingId, setDraggingId] = useState<ResearchNavItemId | null>(null);
-  const navStageRef = useRef<HTMLDivElement | null>(null);
-  const navBodiesRef = useRef(navBodies);
-  const hoveredIdRef = useRef<ResearchNavItemId | null>(null);
-  const draggingIdRef = useRef<ResearchNavItemId | null>(null);
-  const dragMovedRef = useRef(false);
-  const dragStartRef = useRef({ x: 0, y: 0 });
-
-  useEffect(() => {
-    navBodiesRef.current = navBodies;
-  }, [navBodies]);
-
-  useEffect(() => {
-    hoveredIdRef.current = hoveredId;
-  }, [hoveredId]);
-
-  useEffect(() => {
-    draggingIdRef.current = draggingId;
-  }, [draggingId]);
-
-  useEffect(() => {
-    const stage = navStageRef.current;
-    if (reduceMotion || !stage) {
-      return;
-    }
-
-    let frameId = 0;
-    let lastTime = performance.now();
-    let inView = false;
-
-    const tick = (time: number) => {
-      const delta = Math.min((time - lastTime) / 16.67, 2.2);
-      lastTime = time;
-      const hoveredBodyId = hoveredIdRef.current;
-      const draggedBodyId = draggingIdRef.current;
-
-      const next = navBodiesRef.current.map((body) => {
-        if (draggedBodyId === body.id) {
-          return { ...body, vx: 0, vy: 0 };
-        }
-
-        const centerDx = researchNavCore.x - body.x;
-        const centerDy = researchNavCore.y - body.y;
-        const centerDistance = Math.max(Math.hypot(centerDx, centerDy), 0.001);
-        const anchorDx = body.anchorX - body.x;
-        const anchorDy = body.anchorY - body.y;
-        const swirl = Math.sin(time * 0.00017 + body.seed) * 0.00018;
-        const noiseX = Math.sin(time * 0.00071 + body.seed * 1.9) * 0.00024;
-        const noiseY = Math.cos(time * 0.00063 + body.seed * 1.5) * 0.00024;
-
-        return {
-          ...body,
-          vx:
-            body.vx +
-            (centerDx / centerDistance) * 0.00012 +
-            anchorDx * 0.00034 +
-            (-centerDy / centerDistance) * swirl +
-            noiseX,
-          vy:
-            body.vy +
-            (centerDy / centerDistance) * 0.00012 +
-            anchorDy * 0.00034 +
-            (centerDx / centerDistance) * swirl +
-            noiseY,
-        };
-      });
-
-      for (let i = 0; i < next.length; i += 1) {
-        for (let j = i + 1; j < next.length; j += 1) {
-          const first = next[i];
-          const second = next[j];
-
-          if (draggedBodyId === first.id || draggedBodyId === second.id) {
-            continue;
-          }
-
-          const dx = second.x - first.x;
-          const dy = second.y - first.y;
-          const distance = Math.max(Math.hypot(dx, dy), 0.001);
-          const minDistance = first.radius + second.radius + 3.8;
-
-          if (distance >= minDistance * 1.16) {
-            continue;
-          }
-
-          const normalX = dx / distance;
-          const normalY = dy / distance;
-          const softness = Math.max((minDistance * 1.16 - distance) / minDistance, 0);
-          const repulsion = softness * softness * 0.010;
-
-          first.vx -= normalX * repulsion;
-          first.vy -= normalY * repulsion;
-          second.vx += normalX * repulsion;
-          second.vy += normalY * repulsion;
-
-          if (distance < minDistance) {
-            const correction = (minDistance - distance) * 0.045;
-            first.x -= normalX * correction;
-            first.y -= normalY * correction;
-            second.x += normalX * correction;
-            second.y += normalY * correction;
-          }
-        }
-      }
-
-      const bounded = next.map((body) => {
-        if (draggedBodyId === body.id) {
-          const edgePadding = body.radius + 1.4;
-
-          return {
-            ...body,
-            vx: 0,
-            vy: 0,
-            x: Math.min(Math.max(body.x, edgePadding), 100 - edgePadding),
-            y: Math.min(Math.max(body.y, edgePadding), 100 - edgePadding),
-          };
-        }
-
-        const coreDx = body.x - researchNavCore.x;
-        const coreDy = body.y - researchNavCore.y;
-        const coreDistance = Math.max(Math.hypot(coreDx, coreDy), 0.001);
-        const coreMinDistance = body.radius + 16.6;
-        let vx = body.vx;
-        let vy = body.vy;
-
-        if (coreDistance < coreMinDistance) {
-          const pressure = ((coreMinDistance - coreDistance) / coreMinDistance) ** 2 * 0.014;
-          vx += (coreDx / coreDistance) * pressure;
-          vy += (coreDy / coreDistance) * pressure;
-        }
-
-        const edgePadding = body.radius + 1.4;
-
-        if (body.x < edgePadding) {
-          vx += (edgePadding - body.x) * 0.0042;
-        } else if (body.x > 100 - edgePadding) {
-          vx -= (body.x - (100 - edgePadding)) * 0.0042;
-        }
-
-        if (body.y < edgePadding) {
-          vy += (edgePadding - body.y) * 0.0042;
-        } else if (body.y > 100 - edgePadding) {
-          vy -= (body.y - (100 - edgePadding)) * 0.0042;
-        }
-
-        const damping = hoveredBodyId === body.id ? 0.82 : 0.972;
-        vx *= damping;
-        vy *= damping;
-
-        const adjustedSpeed = Math.hypot(vx, vy);
-        const maxSpeed = hoveredBodyId === body.id ? 0.018 : 0.044;
-
-        if (adjustedSpeed > maxSpeed) {
-          vx = (vx / adjustedSpeed) * maxSpeed;
-          vy = (vy / adjustedSpeed) * maxSpeed;
-        }
-
-        const x = body.x + vx * delta;
-        const y = body.y + vy * delta;
-
-        return {
-          ...body,
-          vx,
-          vy,
-          x: Math.min(Math.max(x, edgePadding), 100 - edgePadding),
-          y: Math.min(Math.max(y, edgePadding), 100 - edgePadding),
-        };
-      });
-
-      navBodiesRef.current = bounded;
-      setNavBodies(bounded);
-      frameId = requestAnimationFrame(tick);
-    };
-
-    const updatePlayback = () => {
-      cancelAnimationFrame(frameId);
-      frameId = 0;
-      if (inView && !document.hidden) {
-        lastTime = performance.now();
-        frameId = requestAnimationFrame(tick);
-      }
-    };
-
-    const observer = new IntersectionObserver(([entry]) => {
-      inView = entry.isIntersecting;
-      updatePlayback();
-    });
-    observer.observe(stage);
-    document.addEventListener("visibilitychange", updatePlayback);
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", updatePlayback);
-    };
-  }, [reduceMotion]);
-
-  const navBodyMap = useMemo(() => new Map<ResearchNavItemId, ResearchNavBody>(navBodies.map((body) => [body.id, body])), [navBodies]);
-  const getNavBody = (id: ResearchNavItemId) => navBodyMap.get(id) ?? initialResearchNavBodyMap.get(id)!;
-  const moveNavBody = (id: ResearchNavItemId, clientX: number, clientY: number) => {
-    const stage = navStageRef.current;
-
-    if (!stage) {
-      return;
-    }
-
-    const rect = stage.getBoundingClientRect();
-    const currentBody = navBodiesRef.current.find((body) => body.id === id);
-
-    if (!currentBody) {
-      return;
-    }
-
-    const edgePadding = currentBody.radius + 1.4;
-    const rawX = ((clientX - rect.left) / rect.width) * 100;
-    const rawY = ((clientY - rect.top) / rect.height) * 100;
-    const x = Math.min(Math.max(rawX, edgePadding), 100 - edgePadding);
-    const y = Math.min(Math.max(rawY, edgePadding), 100 - edgePadding);
-    const next = navBodiesRef.current.map((body) =>
-      body.id === id ? { ...body, x, y, vx: 0, vy: 0, anchorX: x, anchorY: y } : body,
-    );
-
-    navBodiesRef.current = next;
-    setNavBodies(next);
-  };
-  const handleNodePointerDown = (id: ResearchNavItemId, event: PointerEvent<HTMLAnchorElement>) => {
-    dragMovedRef.current = false;
-    dragStartRef.current = { x: event.clientX, y: event.clientY };
-    draggingIdRef.current = id;
-    setDraggingId(id);
-    setHoveredId(id);
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-  const handleNodePointerMove = (id: ResearchNavItemId, event: PointerEvent<HTMLAnchorElement>) => {
-    if (draggingIdRef.current !== id) {
-      return;
-    }
-
-    const distance = Math.hypot(event.clientX - dragStartRef.current.x, event.clientY - dragStartRef.current.y);
-
-    if (distance > 4) {
-      dragMovedRef.current = true;
-    }
-
-    moveNavBody(id, event.clientX, event.clientY);
-  };
-  const handleNodePointerUp = (id: ResearchNavItemId, event: PointerEvent<HTMLAnchorElement>) => {
-    if (draggingIdRef.current === id) {
-      moveNavBody(id, event.clientX, event.clientY);
-    }
-
-    setDraggingId(null);
-    draggingIdRef.current = null;
-
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-  };
-  const handleNodePointerCancel = (id: ResearchNavItemId, event: PointerEvent<HTMLAnchorElement>) => {
-    if (draggingIdRef.current === id) {
-      setDraggingId(null);
-      draggingIdRef.current = null;
-    }
-
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-  };
 
   return (
-    <div className="flex min-h-[330px] w-full flex-col p-3 md:p-3.5">
-      <div className="relative z-20 flex items-start justify-between gap-5">
+    <div className="w-full min-w-0 p-3 md:p-3.5">
+      <div className="flex items-start justify-between gap-3">
         <div>
           <div className="text-xs font-semibold uppercase tracking-[0.18em] text-accent">{copy.indexEyebrow}</div>
-          <h2 className="mt-1.5 text-2xl font-semibold tracking-normal text-foreground md:text-[1.7rem]">{copy.ecosystemTitle}</h2>
-          <p className="mt-1.5 max-w-sm text-sm leading-6 text-muted-foreground">
-            {copy.ecosystemDescription}
+          <h2 className="mt-1.5 text-2xl font-semibold text-foreground">{locale === "zh" ? "项目导航" : "Project navigation"}</h2>
+          <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
+            {locale === "zh" ? "点击项目，直接前往并展开详情。" : "Choose a project to jump to its details."}
           </p>
         </div>
-        <div className="hidden rounded-full bg-surface/20 p-3 text-accent shadow-sm backdrop-blur-xl sm:block">
-          <Network className="h-5 w-5" />
+        <div className="rounded-full bg-surface/25 px-3 py-2 text-xs font-semibold text-accent">
+          {researchProjectLinks.length}
         </div>
       </div>
-
-      <div ref={navStageRef} className="relative z-10 mt-2 min-h-[240px] flex-1 overflow-hidden rounded-[26px]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--surface)/0.22),transparent_34%),radial-gradient(circle_at_18%_68%,hsl(var(--green)/0.07),transparent_28%),radial-gradient(circle_at_86%_26%,hsl(var(--amber)/0.08),transparent_30%)]" />
-        <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 100 100" role="presentation">
-          <defs>
-            <linearGradient id="researchNavLandscapeGradient" x1="0%" x2="100%" y1="0%" y2="100%">
-              <stop offset="0%" stopColor="hsl(var(--green))" stopOpacity="0.20" />
-              <stop offset="52%" stopColor="hsl(var(--amber))" stopOpacity="0.24" />
-              <stop offset="100%" stopColor="hsl(var(--green))" stopOpacity="0.16" />
-            </linearGradient>
-          </defs>
-
-          {researchNavItems.map((item) => {
-            const body = getNavBody(item.id);
-
-            return (
-              <line
-                key={`core-${item.id}`}
-                x1={researchNavCore.x}
-                y1={researchNavCore.y}
-                x2={body.x}
-                y2={body.y}
-                stroke="url(#researchNavLandscapeGradient)"
-                strokeWidth={hoveredId === item.id ? "0.9" : "0.45"}
-                strokeLinecap="round"
-                strokeDasharray="3 8"
-                opacity={hoveredId ? (hoveredId === item.id ? "0.96" : "0.26") : "0.72"}
-              />
-            );
-          })}
-
-          {researchNavRelations.map(([from, to]) => {
-            const start = getNavBody(from);
-            const end = getNavBody(to);
-
-            return (
-              <line
-                key={`${from}-${to}`}
-                x1={start.x}
-                y1={start.y}
-                x2={end.x}
-                y2={end.y}
-                stroke="url(#researchNavLandscapeGradient)"
-                strokeWidth="0.32"
-                strokeLinecap="round"
-                strokeDasharray="2 7"
-                opacity={hoveredId ? (hoveredId === from || hoveredId === to ? "0.72" : "0.16") : "0.44"}
-              />
-            );
-          })}
-        </svg>
-
-        <div
-          className="research-core-node absolute z-20"
-          style={{ left: `${researchNavCore.x}%`, top: `${researchNavCore.y}%`, transform: "translate(-50%, -50%)" }}
-        >
-          <div className="text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-accent/80">{copy.core}</div>
-          <div className="mt-1 text-sm font-semibold leading-4 text-foreground">{copy.coreTitle}</div>
-          <div className="mt-1 text-[0.62rem] leading-3 text-muted-foreground">{copy.coreDescription}</div>
-        </div>
-
-        {researchNavItems.map((item) => {
-          const body = getNavBody(item.id);
-          const itemCopy = copy.navItems[item.id];
-
+      <nav className="project-orbit-grid mt-5" aria-label={locale === "zh" ? "项目圆形导航" : "Project bubble navigation"}>
+        {researchProjectLinks.map((item, index) => {
+          const Icon = projectCategoryIcons[item.categoryIndex];
           return (
-            <div
-              key={item.title}
-              className="absolute z-30"
-              style={{
-                left: `${body.x}%`,
-                top: `${body.y}%`,
-                transform: "translate(-50%, -50%)",
-              }}
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              title={`${item.projectName} — ${item.categoryTitle}`}
+              aria-label={item.projectName}
+              onClick={() => dispatchResearchProjectJump(item.id)}
+              className="research-nav-node project-orbit-link focus-ring flex flex-col items-center justify-center rounded-full text-center"
             >
-              <Link
-                href={item.href}
-                target={item.external ? "_blank" : undefined}
-                rel={item.external ? "noreferrer" : undefined}
-                title={itemCopy.body}
-                aria-label={`${itemCopy.title}: ${itemCopy.body}`}
-                onPointerDown={(event) => handleNodePointerDown(item.id, event)}
-                onPointerMove={(event) => handleNodePointerMove(item.id, event)}
-                onPointerUp={(event) => handleNodePointerUp(item.id, event)}
-                onPointerCancel={(event) => handleNodePointerCancel(item.id, event)}
-                onPointerEnter={() => setHoveredId(item.id)}
-                onPointerLeave={() => setHoveredId((current) => (current === item.id ? null : current))}
-                onFocus={() => setHoveredId(item.id)}
-                onBlur={() => setHoveredId((current) => (current === item.id ? null : current))}
-                onClick={(event) => {
-                  if (dragMovedRef.current) {
-                    event.preventDefault();
-                    dragMovedRef.current = false;
-                    return;
-                  }
-
-                  setActiveId(item.id);
-                  window.setTimeout(() => {
-                    setActiveId((current) => (current === item.id ? null : current));
-                  }, 420);
-                }}
-                className={[
-                  "research-nav-node focus-ring group/item flex touch-none cursor-grab select-none flex-col items-center justify-center rounded-full px-4 py-3 text-center transition duration-300 hover:-translate-y-1 active:cursor-grabbing",
-                  item.size === "wide" ? "h-[86px] w-[86px]" : "h-[80px] w-[80px]",
-                  hoveredId === item.id || draggingId === item.id ? "research-nav-node-hovered scale-[1.055]" : "",
-                  activeId === item.id ? "research-nav-node-clicked" : "",
-                ].join(" ")}
-              >
-                <span className="mx-auto grid h-7 w-7 place-items-center rounded-full bg-surface/25 text-accent shadow-sm transition group-hover/item:bg-surface/40">
-                  <item.icon className="h-3.5 w-3.5" />
-                </span>
-                <span className="mt-1.5 block text-[0.72rem] font-semibold leading-4 text-foreground">{itemCopy.title}</span>
-                <span className="mt-1 block text-[0.66rem] font-medium uppercase tracking-[0.16em] text-accent/70">{item.number}</span>
-              </Link>
-            </div>
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-surface/25 text-accent shadow-sm">
+                <Icon className="h-3.5 w-3.5" />
+              </span>
+              <span className="mt-1 text-[0.72rem] font-semibold leading-tight text-foreground">{item.shortName}</span>
+              <span aria-hidden="true" className="mt-1 text-[0.6rem] font-medium tracking-widest text-accent/75">{String(index + 1).padStart(2, "0")}</span>
+            </a>
           );
         })}
-      </div>
+      </nav>
     </div>
   );
 }

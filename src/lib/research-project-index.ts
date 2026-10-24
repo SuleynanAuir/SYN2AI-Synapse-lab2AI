@@ -40,3 +40,7 @@ export const researchProjectLinks = researchCategories.flatMap((category, catego
     projectIndex,
   })),
 );
+
+export function dispatchResearchProjectJump(projectId: string) {
+  window.dispatchEvent(new CustomEvent("research-project-jump", { detail: { id: projectId } }));
+}

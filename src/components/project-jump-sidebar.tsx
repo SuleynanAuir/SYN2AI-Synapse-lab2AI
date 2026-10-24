@@ -4,11 +4,7 @@ import { usePathname } from "next/navigation";
 import { normalizePathname } from "@/lib/site-config";
 import { ListTree } from "lucide-react";
 import { getLocaleFromPathname, projectModuleCopy } from "@/data/site-copy";
-import { researchProjectLinks } from "@/lib/research-project-index";
-
-function dispatchProjectJump(projectId: string) {
-  window.dispatchEvent(new CustomEvent("research-project-jump", { detail: { id: projectId } }));
-}
+import { dispatchResearchProjectJump, researchProjectLinks } from "@/lib/research-project-index";
 
 export function ProjectJumpSidebar() {
   const pathname = normalizePathname(usePathname());
@@ -31,7 +27,7 @@ export function ProjectJumpSidebar() {
             key={item.id}
             href={`#${item.id}`}
             title={`${item.projectName} - ${item.categoryTitle}`}
-            onClick={() => dispatchProjectJump(item.id)}
+            onClick={() => dispatchResearchProjectJump(item.id)}
             className="project-jump-link focus-ring rounded-2xl px-2.5 py-2 text-[0.72rem] font-semibold leading-tight"
           >
             {item.shortName}
