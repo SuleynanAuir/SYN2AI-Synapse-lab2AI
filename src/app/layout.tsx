@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { OptimizedImage } from "@/components/optimized-image";
+import imageManifest from "@/data/image-manifest.json";
 import { ProjectJumpSidebar } from "@/components/project-jump-sidebar";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -14,18 +16,18 @@ export const metadata: Metadata = {
     template: `%s | ${siteTitle}`,
   },
   description: siteDescription,
-  metadataBase: new URL("https://ai-research-laboratory.vercel.app"),
+  metadataBase: new URL("https://syn2ai-synapse-lab2ai.pages.dev"),
   icons: {
     icon: [
       {
-        url: "/assets/web_page/logo.png",
+        url: imageManifest["/assets/web_page/logo.png"].favicon,
         type: "image/png",
       },
     ],
-    shortcut: ["/assets/web_page/logo.png"],
+    shortcut: [imageManifest["/assets/web_page/logo.png"].favicon],
     apple: [
       {
-        url: "/assets/web_page/logo.png",
+        url: imageManifest["/assets/web_page/logo.png"].apple,
         type: "image/png",
       },
     ],
@@ -57,11 +59,11 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <div className="site-backdrop" aria-hidden="true">
-          <img
+          <OptimizedImage
             src="/assets/web_bg_poster.jpg"
             alt=""
             className="site-background-image"
-            decoding="async"
+            sizes="100vw"
             fetchPriority="high"
           />
           <div className="site-background-scrim" />

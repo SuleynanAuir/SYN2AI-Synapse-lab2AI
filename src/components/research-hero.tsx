@@ -18,6 +18,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { OfficialBrandIcon } from "@/components/official-brand-icon";
+import { OptimizedImage } from "@/components/optimized-image";
 import { defaultLocale, heroCopy, type Locale } from "@/data/site-copy";
 import { heroOfficialBrands } from "@/lib/learning-path-brands";
 
@@ -241,12 +242,10 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.56, delay: 0.25, ease: "easeOut" }}
+            initial={false}
             className="mt-4 flex max-w-2xl flex-col gap-3 rounded-3xl border border-white/10 bg-surface/25 p-3 shadow-sm backdrop-blur-xl sm:flex-row sm:items-center"
           >
-            <img
+            <OptimizedImage
               src="/assets/web_page/head_img.jpeg"
               alt="Suleynan Aiur avatar"
               className="h-14 w-14 shrink-0 rounded-2xl border border-white/20 object-cover shadow-sm"

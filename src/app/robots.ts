@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "/sitemap.xml",
+    sitemap: "https://syn2ai-synapse-lab2ai.pages.dev/sitemap.xml",
   };
 }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, BookOpenCheck, ChevronDown, Github, GraduationCap, Layers3, Sparkles } from "lucide-react";
 import { OfficialBrandIcon } from "@/components/official-brand-icon";
+import { OptimizedImage } from "@/components/optimized-image";
 import { researchCategories, type ResearchProject } from "@/data/portfolio";
 import { defaultLocale, getCategoryDisplay, getProjectDisplay, projectModuleCopy, type Locale } from "@/data/site-copy";
 import { getLearningPathBrand } from "@/lib/learning-path-brands";
@@ -110,16 +111,12 @@ export function ResearchProjectModules({ locale = defaultLocale }: { locale?: Lo
         const categoryDisplay = getCategoryDisplay(category, locale);
         const previewImages = category.projects
           .map((project) => project.image ?? project.images?.[0])
-          .filter(Boolean)
+          .filter((image): image is string => Boolean(image))
           .slice(0, 4);
 
         return (
-          <motion.section
+          <section
             key={category.title}
-            initial={{ opacity: 0, y: 28, scale: 0.992 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true, amount: 0.08, margin: "0px 0px 120px 0px" }}
-            transition={{ delay: index * 0.045, duration: 0.58, ease: [0.22, 1, 0.36, 1] }}
             style={moduleToneStyle}
             className={cn("material-card research-module-card overflow-hidden", isOpen ? "research-module-card-open" : "")}
           >
@@ -132,12 +129,12 @@ export function ResearchProjectModules({ locale = defaultLocale }: { locale?: Lo
               {previewImages.length > 0 ? (
                 <div className="mb-7 flex flex-wrap items-start justify-start gap-3 md:gap-4">
                   {previewImages.map((image, imageIndex) => (
-                    <img
+                    <OptimizedImage
                       key={image}
                       src={image}
                       alt={`${category.title} project preview ${imageIndex + 1}`}
-                      loading="lazy"
-                      decoding="async"
+                      sizes="(min-width: 1280px) 320px, (min-width: 768px) 280px, calc(100vw - 3rem)"
+                      fetchPriority={index === 0 ? "auto" : "low"}
                       className="h-[clamp(7rem,9.4vw,9.75rem)] w-auto max-w-full min-w-0 object-contain transition duration-500 group-hover:-translate-y-1 group-hover:scale-[1.015]"
                     />
                   ))}
@@ -210,7 +207,7 @@ export function ResearchProjectModules({ locale = defaultLocale }: { locale?: Lo
                 </motion.div>
               ) : null}
             </AnimatePresence>
-          </motion.section>
+          </section>
         );
       })}
     </div>
@@ -467,13 +464,12 @@ function ProjectVisual({ name, images }: { name: string; images: readonly string
   return (
     <div className="grid w-full max-w-[34rem] gap-3">
       {images.map((image, index) => (
-        <img
+        <OptimizedImage
           key={image}
           src={image}
           alt={index === 0 ? `${name} screenshot` : `${name} supporting screenshot ${index}`}
-          loading="lazy"
-          decoding="async"
-          className="block w-full max-w-full object-contain"
+          sizes="(min-width: 768px) 544px, calc(100vw - 3rem)"
+          className="block h-auto w-full max-w-full object-contain"
         />
       ))}
     </div>

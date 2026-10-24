@@ -7,6 +7,7 @@ import { Github, Languages, Menu, Sparkles, X } from "lucide-react";
 import { ResearchVisionHeaderRail } from "@/components/research-vision-sidebar";
 import { getLanguageHref, getLocaleFromPathname, headerCopy } from "@/data/site-copy";
 import { cn } from "@/lib/utils";
+import { OptimizedImage } from "@/components/optimized-image";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -62,7 +63,7 @@ export function SiteHeader() {
       <div className="site-header-inner mx-auto flex h-[72px] max-w-7xl items-center justify-between px-6 lg:px-8">
         <Link href={copy.nav[0].href} className="focus-ring flex items-center gap-3 rounded-2xl">
           <span className="grid h-10 w-10 place-items-center rounded-2xl bg-surface/25 shadow-sm ring-1 ring-white/10 backdrop-blur-xl">
-            <img
+            <OptimizedImage
               src="/assets/web_page/logo.png"
               alt="AI Systems Research Laboratory logo"
               className="brand-mark h-8 w-8 rounded-xl object-cover"

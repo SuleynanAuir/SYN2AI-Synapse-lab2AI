@@ -82,18 +82,24 @@ The site uses a soft research-lab visual system: translucent surfaces, warm gree
 
 ## Deployment
 
-This is a standard Next.js project and can be deployed on Vercel or any compatible Node/Next hosting environment.
+This project exports a static site for Cloudflare Pages at `https://syn2ai-synapse-lab2ai.pages.dev`.
 
 1. Push the repository to GitHub.
-2. Import the repository in Vercel.
-3. Keep the framework preset as `Next.js`.
-4. Use the default build command:
+2. Import the repository into a **Pages** project named `syn2ai-synapse-lab2ai`.
+3. Select `Next.js (Static HTML Export)` and set the output directory to `out`.
+4. Set the build command to:
 
 ```bash
 npm run build
 ```
 
 5. Deploy the production branch.
+
+### Image loading
+
+`npm run build` and `npm run dev` automatically run `npm run optimize:images`. The script keeps the originals in `public/assets`, generates responsive WebP files in `public/assets/optimized`, and updates `src/data/image-manifest.json`. Do not skip the image step when running Next directly.
+
+The small avatar and header logo are embedded in the initial HTML. Project previews load eagerly, with tiny embedded previews visible while the full images arrive; screenshots in project details start loading when the section is opened. Image dimensions reserve space during loading. The optimized filenames include a content hash, so `public/_headers` can cache them for one year without serving an outdated version after an image changes.
 
 ## Live Routes
 
