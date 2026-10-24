@@ -1,5 +1,6 @@
 import type { ImgHTMLAttributes } from "react";
 import manifest from "@/data/image-manifest.json";
+import { withBasePath } from "@/lib/site-config";
 
 type ImageAsset = {
   src: string;
@@ -18,8 +19,8 @@ export function OptimizedImage({ src, alt, sizes, style, loading = "eager", ...p
   return (
     <img
       {...props}
-      src={asset?.inline ?? asset?.src ?? src}
-      srcSet={asset?.inline ? undefined : asset?.srcSet}
+      src={asset?.inline ?? withBasePath(asset?.src ?? src)}
+      srcSet={asset?.inline ? undefined : asset?.srcSet.split(", ").map((candidate) => withBasePath(candidate)).join(", ")}
       sizes={asset?.inline ? undefined : sizes}
       width={asset?.width}
       height={asset?.height}

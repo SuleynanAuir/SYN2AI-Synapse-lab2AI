@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { normalizePathname } from "@/lib/site-config";
 import { ListTree } from "lucide-react";
 import { getLocaleFromPathname, projectModuleCopy } from "@/data/site-copy";
 import { researchProjectLinks } from "@/lib/research-project-index";
@@ -10,7 +11,7 @@ function dispatchProjectJump(projectId: string) {
 }
 
 export function ProjectJumpSidebar() {
-  const pathname = usePathname();
+  const pathname = normalizePathname(usePathname());
   const locale = getLocaleFromPathname(pathname);
   const copy = projectModuleCopy[locale];
 

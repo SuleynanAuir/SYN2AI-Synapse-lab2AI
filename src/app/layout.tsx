@@ -5,6 +5,7 @@ import imageManifest from "@/data/image-manifest.json";
 import { ProjectJumpSidebar } from "@/components/project-jump-sidebar";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { siteUrl, withBasePath } from "@/lib/site-config";
 
 const siteTitle = "AI Research Laboratory Portfolio";
 const siteDescription =
@@ -16,18 +17,18 @@ export const metadata: Metadata = {
     template: `%s | ${siteTitle}`,
   },
   description: siteDescription,
-  metadataBase: new URL("https://syn2ai-synapse-lab2ai.pages.dev"),
+  metadataBase: new URL(`${siteUrl}/`),
   icons: {
     icon: [
       {
-        url: imageManifest["/assets/web_page/logo.png"].favicon,
+        url: withBasePath(imageManifest["/assets/web_page/logo.png"].favicon),
         type: "image/png",
       },
     ],
-    shortcut: [imageManifest["/assets/web_page/logo.png"].favicon],
+    shortcut: [withBasePath(imageManifest["/assets/web_page/logo.png"].favicon)],
     apple: [
       {
-        url: imageManifest["/assets/web_page/logo.png"].apple,
+        url: withBasePath(imageManifest["/assets/web_page/logo.png"].apple),
         type: "image/png",
       },
     ],

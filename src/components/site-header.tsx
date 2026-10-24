@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { normalizePathname } from "@/lib/site-config";
 import { Github, Languages, Menu, Sparkles, X } from "lucide-react";
 import { ResearchVisionHeaderRail } from "@/components/research-vision-sidebar";
 import { getLanguageHref, getLocaleFromPathname, headerCopy } from "@/data/site-copy";
@@ -10,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { OptimizedImage } from "@/components/optimized-image";
 
 export function SiteHeader() {
-  const pathname = usePathname();
+  const pathname = normalizePathname(usePathname());
   const locale = getLocaleFromPathname(pathname);
   const copy = headerCopy[locale];
   const [open, setOpen] = useState(false);

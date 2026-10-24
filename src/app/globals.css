@@ -120,6 +120,15 @@ body {
   padding-top: 78px;
 }
 
+@media (max-width: 1023px) {
+  .site-page-shell {
+    width: 100%;
+    margin-left: 0;
+    min-height: 100vh;
+    transform: none;
+  }
+}
+
 .site-header {
   isolation: isolate;
   overflow: visible;

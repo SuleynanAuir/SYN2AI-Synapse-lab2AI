@@ -1,0 +1,11 @@
+{
+  "root": true,
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "ignorePatterns": ["out/", ".next/", "node_modules/", "next-env.d.ts", "awesome-design-md/"],
+  "overrides": [
+    {
+      "files": ["src/components/optimized-image.tsx", "src/components/official-brand-icon.tsx"],
+      "rules": { "@next/next/no-img-element": "off" }
+    }
+  ]
+}

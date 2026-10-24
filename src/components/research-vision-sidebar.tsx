@@ -1,11 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { normalizePathname } from "@/lib/site-config";
 import { Sparkles } from "lucide-react";
 import { getLocaleFromPathname, homeCopy } from "@/data/site-copy";
 
 export function ResearchVisionHeaderRail() {
-  const pathname = usePathname();
+  const pathname = normalizePathname(usePathname());
   const locale = getLocaleFromPathname(pathname);
   const copy = homeCopy[locale];
 

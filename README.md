@@ -74,37 +74,49 @@ The portfolio content is organized through code and markdown-style project data:
 - English/Chinese site copy: `src/data/site-copy.ts`
 - Project jump sidebar links: `src/lib/research-project-index.ts`
 - Preview images for this README: `assets/page/*.png`
-- Website project images used by the UI: `assets/web_page/*`
+- Website project images used by the UI: `public/assets/web_page/*`
 
 ## Design Direction
 
-The site uses a soft research-lab visual system: translucent surfaces, warm green/gold accents, animated background video, floating project navigation, bilingual content, official technology icons, and expandable project evidence sections. The goal is to make each project readable as a research contribution rather than a flat portfolio card.
+The site uses a soft research-lab visual system: translucent surfaces, warm green/gold accents, static background image, floating project navigation, bilingual content, official technology icons, and expandable project evidence sections. The goal is to make each project readable as a research contribution rather than a flat portfolio card.
 
 ## Deployment
 
-This project exports a static site for Cloudflare Pages at `https://syn2ai-synapse-lab2ai.pages.dev`.
+The complete website is hosted on **GitHub Pages**:
 
-1. Push the repository to GitHub.
-2. Import the repository into a **Pages** project named `syn2ai-synapse-lab2ai`.
-3. Select `Next.js (Static HTML Export)` and set the output directory to `out`.
-4. Set the build command to:
+**https://suleynanauir.github.io/SYN2AI-Synapse-lab2AI/**
+
+The `.github/workflows/pages.yml` workflow builds and publishes the static `out/` directory whenever `main` is pushed. It can also be run manually from **Actions → Deploy GitHub Pages → Run workflow**. No Cloudflare account or server is required.
+
+For a new repository or fork:
+
+1. In **Settings → Pages → Build and deployment**, choose **GitHub Actions** as the source.
+2. Push to `main` or run the deployment workflow.
+3. Open the address reported by the workflow's `github-pages` environment.
+
+The workflow reads the actual Pages URL and repository prefix from GitHub. Navigation, responsive images, icons, and the sitemap use that prefix. Static routes are exported as directories with `index.html`, so opening or refreshing a project detail URL works directly.
+
+### Local development and production builds
 
 ```bash
-npm run build
+npm ci
+npm run dev
 ```
 
-5. Deploy the production branch.
+Development runs at `http://localhost:3000/`. `npm run build` defaults to the production `/SYN2AI-Synapse-lab2AI` prefix. Serve `out/` mounted at that path to preview the production build; `next start` is not used for static exports. To build for another host, set `NEXT_PUBLIC_BASE_PATH` (empty for a root domain) and `NEXT_PUBLIC_SITE_URL` to the full public site URL before building.
 
 ### Image loading
 
 `npm run build` and `npm run dev` automatically run `npm run optimize:images`. The script keeps the originals in `public/assets`, generates responsive WebP files in `public/assets/optimized`, and updates `src/data/image-manifest.json`. Do not skip the image step when running Next directly.
 
-The small avatar and header logo are embedded in the initial HTML. Project previews load eagerly, with tiny embedded previews visible while the full images arrive; screenshots in project details start loading when the section is opened. Image dimensions reserve space during loading. The optimized filenames include a content hash, so `public/_headers` can cache them for one year without serving an outdated version after an image changes.
+The small avatar and header logo are embedded in the initial HTML. Project previews load eagerly, with tiny embedded previews visible while the full images arrive; screenshots in project details start loading when the section is opened. Image dimensions reserve space during loading. The optimized filenames include a content hash so updated images receive new URLs. GitHub Pages manages HTTP caching for the exported files.
 
 ## Live Routes
 
-- English homepage: `/asrl_agent_ml_dl_cv_nlp`
-- Chinese homepage: `/zh/asrl_agent_ml_dl_cv_nlp`
+These paths are relative to the Pages project URL above.
+
+- English homepage: `/asrl_agent_ml_dl_cv_nlp/`
+- Chinese homepage: `/zh/asrl_agent_ml_dl_cv_nlp/`
 - Project directory sidebar: persistent shortcut navigation for the project modules
 - Language switch: toggles between English and Chinese page content
 

@@ -191,7 +191,7 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
   return (
     <section className="relative overflow-hidden border-b border-white/10 bg-background/10">
       <div className="mx-auto grid max-w-7xl gap-5 px-6 pb-8 pt-8 lg:min-h-[calc(100svh-72px)] lg:grid-cols-[minmax(0,0.58fr)_minmax(340px,0.42fr)] lg:items-stretch lg:px-8 lg:pb-8 lg:pt-8 xl:grid-cols-[minmax(0,0.6fr)_minmax(360px,0.4fr)]">
-        <div className="relative z-10 flex flex-col lg:min-h-[340px] lg:justify-center">
+        <div className="relative z-10 flex min-w-0 flex-col lg:min-h-[340px] lg:justify-center">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
@@ -208,10 +208,10 @@ export function ResearchHero({ locale = defaultLocale }: { locale?: Locale }) {
             transition={{ duration: 0.62, delay: 0.08, ease: "easeOut" }}
             className="mt-6 max-w-none text-[1.7rem] font-semibold leading-[1.04] tracking-normal text-foreground sm:text-[2.65rem] md:text-[3.2rem] lg:text-[2.75rem] xl:text-[3.25rem]"
           >
-            <span className="block whitespace-nowrap">
+            <span className="block sm:whitespace-nowrap">
               {copy.h1Line1Prefix} <span className="gradient-text">{copy.h1Line1Highlight}</span>
             </span>
-            <span className="block whitespace-nowrap">
+            <span className="block sm:whitespace-nowrap">
               {copy.h1Line2Prefix} <span className="text-accent">{copy.h1Line2Highlight}</span>
             </span>
           </motion.h1>
