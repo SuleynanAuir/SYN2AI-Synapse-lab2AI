@@ -20,7 +20,7 @@ import { OptimizedImage } from "@/components/optimized-image";
 import { defaultLocale, heroCopy, type Locale } from "@/data/site-copy";
 import { heroOfficialBrands } from "@/lib/learning-path-brands";
 import { dispatchResearchProjectJump } from "@/lib/research-project-index";
-import { projectNavigationItems, projectsPerPage } from "@/data/project-navigation";
+import { projectDomainHues, projectNavigationItems, projectsPerPage } from "@/data/project-navigation";
 
 const githubProfileStats = [
   { label: "Repositories", value: "25", icon: Layers3 },
@@ -238,7 +238,7 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
     <div className="project-navigation-panel">
       <div className="flex shrink-0 items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-foreground">{locale === "zh" ? "项目导航" : "Project navigation"}</h2>
-        <span className="rounded-full bg-surface/25 px-2.5 py-1 text-xs font-semibold text-accent">{projectNavigationItems.length}</span>
+        <span className="text-xs font-medium tabular-nums text-accent/70">{projectNavigationItems.length}</span>
       </div>
       <nav id="hero-project-list" className="project-entry-list" aria-label={locale === "zh" ? "项目导航" : "Project navigation"}>
         {visibleProjects.map((item) => (
@@ -252,23 +252,25 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
           >
             <span className="project-entry-name">{item.name}</span>
             <span className="project-entry-tags">
-              <span className="project-entry-tag project-domain-tag" title={`${locale === "zh" ? "应用领域" : "Application domain"}: ${item.domain[locale]}`}>
+              <span className="project-entry-tag project-domain-tag" data-domain-group={item.domainGroup} style={{ "--tag-hue": projectDomainHues[item.domainGroup] } as CSSProperties} title={`${locale === "zh" ? "应用领域" : "Application domain"}: ${item.domain[locale]}`}>
                 {item.domain[locale]}
               </span>
-              <span className="project-entry-tag project-technology-tag" title={`${locale === "zh" ? "核心技术" : "Core technology"}: ${item.technology[locale]}`}>
-                {item.technology[locale]}
-              </span>
+              {item.technologies.map((technology) => (
+                <span key={technology.en} className="project-entry-tag project-technology-tag" title={`${locale === "zh" ? "核心技术" : "Core technology"}: ${technology[locale]}`}>
+                  {technology[locale]}
+                </span>
+              ))}
             </span>
           </a>
         ))}
       </nav>
       <div className="project-pagination">
         <button type="button" className="project-page-button focus-ring" aria-controls="hero-project-list" disabled={page === 0} onClick={() => setPage((current) => current - 1)}>
-          {locale === "zh" ? "上一页" : "Previous"}
+          {locale === "zh" ? "← 上一页" : "← Previous"}
         </button>
         <span className="text-xs font-medium text-muted-foreground" aria-live="polite" aria-atomic="true">{page + 1} / {pageCount}</span>
         <button type="button" className="project-page-button focus-ring" aria-controls="hero-project-list" disabled={page === pageCount - 1} onClick={() => setPage((current) => current + 1)}>
-          {locale === "zh" ? "下一页" : "Next"}
+          {locale === "zh" ? "下一页 →" : "Next →"}
         </button>
       </div>
     </div>
