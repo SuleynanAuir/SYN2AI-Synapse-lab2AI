@@ -9,7 +9,6 @@ import {
   Cpu,
   Database,
   FlaskConical,
-  ExternalLink,
   Github,
   Layers3,
   Sparkles,
@@ -256,7 +255,7 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
                     className="project-repository-link focus-ring"
                     aria-label={`${item.name}${repository.version ? ` ${repository.version}` : ""} — GitHub (${locale === "zh" ? "新标签页打开" : "opens in a new tab"})`}
                     title={`GitHub${repository.version ? ` ${repository.version}` : ""} ↗`}>
-                    <ExternalLink size={14} strokeWidth={2.5} aria-hidden="true" />
+                    <Github size={14} strokeWidth={2.5} aria-hidden="true" />
                     {repository.version && <span>{repository.version}</span>}
                   </a>
                 ))}

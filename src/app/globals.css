@@ -178,9 +178,8 @@ body {
 
 .project-entry-number {
   flex: 0 0 1.25rem;
-  color: #822443;
-  background: #f6e2e7;
-  border-radius: 4px;
+  color: #000;
+  background: transparent;
   text-align: center;
   font-size: 0.75rem;
   font-weight: 800;
@@ -267,20 +266,19 @@ body {
   min-height: 30px;
   padding: 4px 12px;
   border: 0;
-  border-radius: 999px;
-  background: #e5edf4;
+  border-radius: 0;
+  background: transparent;
   color: #20496c;
   font-size: 0.8125rem;
   font-weight: 700;
 }
 
-.project-page-button:hover:not(:disabled) { background: #caddeb; }
-.project-page-button:disabled { background: #dedbd3; color: #625e55; cursor: default; }
+.project-page-button:hover:not(:disabled) { text-decoration: underline; text-underline-offset: 3px; }
+.project-page-button:disabled { background: transparent; color: #625e55; cursor: default; }
 .project-page-indicator {
   padding: 4px 10px;
-  border-radius: 8px;
-  background: #245580;
-  color: #fff;
+  background: transparent;
+  color: #000;
   font-size: 0.8125rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
