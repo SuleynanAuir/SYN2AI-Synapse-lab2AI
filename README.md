@@ -105,6 +105,10 @@ npm run dev
 
 Development runs at `http://localhost:3000/`. `npm run build` defaults to the production `/SYN2AI-Synapse-lab2AI` prefix. Serve `out/` mounted at that path to preview the production build; `next start` is not used for static exports. To build for another host, set `NEXT_PUBLIC_BASE_PATH` (empty for a root domain) and `NEXT_PUBLIC_SITE_URL` to the full public site URL before building.
 
+### Cloudflare Pages mirror
+
+The same `main` branch also deploys to `https://syn2ai-synapse-lab2ai.pages.dev/` using `npm run build` and the `out` output directory. Cloudflare's automatic `CF_PAGES=1` build variable selects an empty resource prefix and the mirror's own site URL. GitHub Actions continues to supply its repository prefix explicitly. Do not copy the GitHub-specific `out/` build to Cloudflare: rebuild for each host so scripts, styles, images, navigation and metadata use the correct paths. To preview the Cloudflare build locally, run `CF_PAGES=1 npm run build` and serve `out/` directly at `/`.
+
 ### Image loading
 
 `npm run build` and `npm run dev` automatically run `npm run optimize:images`. The script keeps the originals in `public/assets`, generates responsive WebP files in `public/assets/optimized`, and updates `src/data/image-manifest.json`. Do not skip the image step when running Next directly.
