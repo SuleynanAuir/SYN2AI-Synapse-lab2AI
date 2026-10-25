@@ -241,7 +241,7 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
         <span className="text-xs font-medium tabular-nums text-accent/70">{projectNavigationItems.length}</span>
       </div>
       <nav id="hero-project-list" className="project-entry-list" aria-label={locale === "zh" ? "项目导航" : "Project navigation"}>
-        {visibleProjects.map((item) => (
+        {visibleProjects.map((item, index) => (
           <a
             key={item.id}
             href={`#${item.id}`}
@@ -250,11 +250,14 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
             onClick={() => dispatchResearchProjectJump(item.id)}
             className="project-entry-link focus-ring"
           >
-            <span className="project-entry-name">{item.name}</span>
-            <span className="project-entry-tags">
+            <span className="project-entry-heading">
+              <span className="project-entry-number" aria-hidden="true">{String(page * projectsPerPage + index + 1).padStart(2, "0")}</span>
+              <span className="project-entry-name">{item.name}</span>
               <span className="project-entry-tag project-domain-tag" data-domain-group={item.domainGroup} style={{ "--tag-hue": projectDomainHues[item.domainGroup] } as CSSProperties} title={`${locale === "zh" ? "应用领域" : "Application domain"}: ${item.domain[locale]}`}>
                 {item.domain[locale]}
               </span>
+            </span>
+            <span className="project-entry-tags">
               {item.technologies.map((technology) => (
                 <span key={technology.en} className="project-entry-tag project-technology-tag" title={`${locale === "zh" ? "核心技术" : "Core technology"}: ${technology[locale]}`}>
                   {technology[locale]}
