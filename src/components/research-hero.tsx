@@ -9,6 +9,7 @@ import {
   Cpu,
   Database,
   FlaskConical,
+  ExternalLink,
   Github,
   Layers3,
   Sparkles,
@@ -242,19 +243,23 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
       </div>
       <nav id="hero-project-list" className="project-entry-list" aria-label={locale === "zh" ? "项目导航" : "Project navigation"}>
         {visibleProjects.map((item, index) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            title={`${item.name} — ${item.projectName}`}
-            aria-label={item.projectName}
-            onClick={() => dispatchResearchProjectJump(item.id)}
-            className="project-entry-link focus-ring"
-          >
+          <div key={item.id} className="project-entry-link">
             <span className="project-entry-heading">
               <span className="project-entry-number" aria-hidden="true">{String(page * projectsPerPage + index + 1).padStart(2, "0")}</span>
-              <span className="project-entry-name">{item.name}</span>
+              <a className="project-entry-name focus-ring" href={`#${item.id}`} title={item.name} aria-label={item.projectName} onClick={() => dispatchResearchProjectJump(item.id)}>{item.name}</a>
               <span className="project-entry-tag project-domain-tag" data-domain-group={item.domainGroup} style={{ "--tag-hue": projectDomainHues[item.domainGroup] } as CSSProperties} title={`${locale === "zh" ? "应用领域" : "Application domain"}: ${item.domain[locale]}`}>
                 {item.domain[locale]}
+              </span>
+              <span className="project-repository-links">
+                {item.repositories.map((repository) => (
+                  <a key={repository.href} href={repository.href} target="_blank" rel="noopener noreferrer"
+                    className="project-repository-link focus-ring"
+                    aria-label={`${item.name}${repository.version ? ` ${repository.version}` : ""} — GitHub (${locale === "zh" ? "新标签页打开" : "opens in a new tab"})`}
+                    title={`GitHub${repository.version ? ` ${repository.version}` : ""} ↗`}>
+                    <ExternalLink size={14} strokeWidth={2.5} aria-hidden="true" />
+                    {repository.version && <span>{repository.version}</span>}
+                  </a>
+                ))}
               </span>
             </span>
             <span className="project-entry-tags">
@@ -264,14 +269,14 @@ function ResearchNavigation({ locale }: { locale: Locale }) {
                 </span>
               ))}
             </span>
-          </a>
+          </div>
         ))}
       </nav>
       <div className="project-pagination">
         <button type="button" className="project-page-button focus-ring" aria-controls="hero-project-list" disabled={page === 0} onClick={() => setPage((current) => current - 1)}>
           {locale === "zh" ? "← 上一页" : "← Previous"}
         </button>
-        <span className="text-xs font-medium text-muted-foreground" aria-live="polite" aria-atomic="true">{page + 1} / {pageCount}</span>
+        <span className="project-page-indicator" aria-live="polite" aria-atomic="true">{page + 1} / {pageCount}</span>
         <button type="button" className="project-page-button focus-ring" aria-controls="hero-project-list" disabled={page === pageCount - 1} onClick={() => setPage((current) => current + 1)}>
           {locale === "zh" ? "下一页 →" : "Next →"}
         </button>

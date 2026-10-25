@@ -178,10 +178,31 @@ body {
 
 .project-entry-number {
   flex: 0 0 1.25rem;
-  color: hsl(var(--accent) / 0.75);
-  font-size: 0.625rem;
+  color: #822443;
+  background: #f6e2e7;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
+
+.project-repository-links { display: flex; flex-shrink: 0; gap: 4px; }
+.project-repository-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 20px;
+  height: 20px;
+  padding-inline: 3px;
+  border-radius: 5px;
+  color: #fff;
+  background: #245580;
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+.project-repository-link:hover { background: #163c60; }
 
 .project-entry-heading .project-domain-tag {
   flex: 0 1 auto;
@@ -244,17 +265,26 @@ body {
 
 .project-page-button {
   min-height: 30px;
-  padding: 4px 6px;
+  padding: 4px 12px;
   border: 0;
   border-radius: 999px;
-  background: transparent;
-  color: hsl(var(--accent));
-  font-size: 0.75rem;
-  font-weight: 600;
+  background: #e5edf4;
+  color: #20496c;
+  font-size: 0.8125rem;
+  font-weight: 700;
 }
 
-.project-page-button:hover:not(:disabled) { background: hsl(var(--surface) / 0.18); }
-.project-page-button:disabled { opacity: 0.40; cursor: default; }
+.project-page-button:hover:not(:disabled) { background: #caddeb; }
+.project-page-button:disabled { background: #dedbd3; color: #625e55; cursor: default; }
+.project-page-indicator {
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #245580;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .project-entry-link { transition: none; }

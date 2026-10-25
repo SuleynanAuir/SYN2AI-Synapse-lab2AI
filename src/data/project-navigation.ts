@@ -42,10 +42,70 @@ const entries: NavigationDetails[] = [
   {"projectName": "DRL Basis Projects", "name": "DRL Basis", "domain": {"en": "Decision Making", "zh": "决策"}, "domainGroup": "research", "technologies": [{"en": "PPO", "zh": "PPO"}, {"en": "Reinforcement Learning", "zh": "强化学习"}]},
 ];
 
+const projectRepositories: Record<string, string[]> = {
+  "NEXUS": [
+    "NEXUS-Navigating-Emergent-X-agent-Universe-Simulator-with-Unprecedented-Insight"
+  ],
+  "ScratchOML-NIDS": [
+    "ScratchOML-NIDS"
+  ],
+  "OMNI-Rec": [
+    "OMNI-Multimodal-Intelligent-OneRec-Based-System"
+  ],
+  "Chronos-2 Time-Series Foundation Model": [
+    "Amazon-TSChronos"
+  ],
+  "Agent-You-MustKnows": [
+    "Agent-You-MustKnows"
+  ],
+  "VeFloodBN": [
+    "VeFloodBN"
+  ],
+  "DRL Basis Projects": [
+    "DRL-Basis-Project-v1",
+    "DRL-Basis-Project-v2"
+  ],
+  "PEANUT Video Restoration": [
+    "PEANUT--Prompt-Enhanced-Ablation-with-Optical-Flow-Based-Neural-Unit"
+  ],
+  "P-ADONIS OCR": [
+    "P-ADONIS"
+  ],
+  "LLaMA Factory Fine-tuning": [
+    "Enterprise-Enhanced-LLaMA-Factory-Pro-Advanced-FineTuning-Local-Deployment-Pipeline"
+  ],
+  "CognitiveTemp DeepSearch Agents": [
+    "CognitiveTemp-DeepSearch-Agents"
+  ],
+  "Clinical Brain Tumor Detection": [
+    "Clinical-Brain-Tumor-Detection-Optimized-ML-Frame4MRI-Diagnosis"
+  ],
+  "UPARIS-DS Agents": [
+    "UPAIRS-Agents"
+  ],
+  "Hateful Memes Detection": [
+    "Hateful-Image-Project"
+  ],
+  "Customer Analytics Platform": [
+    "Customer-Analytics-Modeling-Churn-and-Value-in-E-Commerce"
+  ],
+  "Qwen HotelService Master": [
+    "Distributed-Fine-Tuning-of-Qwen2.5-7B-as-HotelService-Master"
+  ],
+  "Weibo SentimentBot QA-Bot": [
+    "WeiboPublics-SentimentBot-E2-FineTuning-Pipeline-of-Qwen3.5-0.6B-on-AutoDL-Cloud-Infrastrcture"
+  ]
+};
+
 export const projectNavigationItems = entries.map((entry) => {
   const project = researchProjectLinks.find((item) => item.projectName === entry.projectName);
   if (!project) throw new Error(`Unknown navigation project: ${entry.projectName}`);
-  return { ...project, ...entry };
+  const repositories = projectRepositories[entry.projectName];
+  if (!repositories?.length) throw new Error(`Missing repository: ${entry.projectName}`);
+  return { ...project, ...entry, repositories: repositories.map((slug) => ({
+    href: `https://github.com/SuleynanAuir/${slug}`,
+    version: repositories.length > 1 ? slug.split("-").at(-1) : null,
+  })) };
 });
 
 export const projectsPerPage = 7;
